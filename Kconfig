@@ -10,9 +10,6 @@ menu "Platform Select"
             help
                 STM32 shenzhou iii board
 	endchoice
-
-	source "platform/Kconfig"
-
 endmenu
 
 menu "Fireware space allocation"
