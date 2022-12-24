@@ -1,0 +1,6 @@
+INCLUDEPATH += -I$(ROOT_PATH)/include
+INCLUDEPATH += -I$(ROOT_PATH)/include/drivers/24cxx
+INCLUDEPATH += -I$(ROOT_PATH)/include/drivers/w25x16
+INCLUDEPATH += -I$(ROOT_PATH)/include/drivers/lcd
+INCLUDEPATH += -I$(ROOT_PATH)/include/base/ucosii
+INCLUDEPATH += -I$(TOP)/config

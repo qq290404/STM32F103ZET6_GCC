@@ -1,0 +1,7 @@
+obj
+bin
+lib
+out
+.config
+.config.old
+*.pyc

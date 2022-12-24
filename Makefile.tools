@@ -1,0 +1,21 @@
+
+ifeq ($(CONFIG_STM32F103ZET6),y)
+OPENOCD_TARGET_CFG := stm32f1x.cfg
+FLASH_ADDR = 0x08000000
+FLASH_SIZE = 0x80000
+FIREWARE_PATH = $(TOP)/out/stm32f103zet6.bin
+endif
+
+OPENOCD_TARGET_CFG ?= 
+
+OPENOCD_CMD := $(OPENOCD) -f $(OPENOCD_PATH)/share/openocd/scripts/interface/stlink.cfg -f $(OPENOCD_PATH)/share/openocd/scripts/target/$(OPENOCD_TARGET_CFG) 
+
+.PHONY: erase
+.PHONY: download
+
+download:
+	@$(OPENOCD_CMD) -c "init;halt;reset halt;flash write_image erase $(FIREWARE_PATH) $(FLASH_ADDR);reset;shutdown;"
+
+erase:
+	@$(OPENOCD_CMD) -c "init;halt;reset halt;flash erase_address $(FLASH_ADDR) $(FLASH_SIZE);shutdown;"
+	

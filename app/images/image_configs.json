@@ -1,0 +1,10 @@
+{
+    "filesystem_configs":{
+    "jffs2": {"pagesize": 2048, "eraseblock": 256, "options": "--little-endian -m none " }
+    },
+
+    "flash":[
+        {"filesystem": "jffs2", "padding_size": 128, "target_folder": "flash/test", "dict_key": "test"}
+    ]
+}
+

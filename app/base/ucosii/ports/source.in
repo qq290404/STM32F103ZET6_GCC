@@ -1,0 +1,3 @@
+SOURCES += ports/os_cpu_a.s
+SOURCES += ports/os_cpu_c.c
+SOURCES += ports/os_dbg.c

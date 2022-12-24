@@ -1,0 +1,11 @@
+SOURCES += src/os_bsp.c
+SOURCES += src/os_core.c
+SOURCES += src/os_flag.c
+SOURCES += src/os_mbox.c
+SOURCES += src/os_mem.c
+SOURCES += src/os_mutex.c
+SOURCES += src/os_q.c
+SOURCES += src/os_sem.c
+SOURCES += src/os_task.c
+SOURCES += src/os_time.c
+SOURCES += src/os_tmr.c

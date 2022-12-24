@@ -1,0 +1,20 @@
+# link libs define
+STATIC_LINK_LIB_LIST :=
+STATIC_LINK_EXT_LIB_LIST :=
+
+sinclude $(ROOT_PATH)/Makefile.libs
+
+# link libs full path
+ifneq ($(STATIC_LINK_LIB_LIST)null, null)
+STATIC_LINK_LIB_LIST := $(addprefix $(LIBS_PATH)/,$(STATIC_LINK_LIB_LIST))
+endif
+
+ifneq ($(STATIC_LINK_EXT_LIB_LIST)null, null)
+STATIC_LINK_EXT_LIB_LIST := $(addprefix $(EXT_LIBS_PATH)/,$(STATIC_LINK_EXT_LIB_LIST))
+endif
+
+STATIC_LINK_LIBS := $(STATIC_LINK_LIB_LIST) $(STATIC_LINK_EXT_LIB_LIST)
+
+# for clean
+LIB_LIST := $(STATIC_LINK_LIBS)
+

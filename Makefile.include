@@ -1,0 +1,230 @@
+include $(TOP)/.config
+include $(TOP)/Makefile.build
+include $(TOP)/Makefile.func
+
+######################################
+# path
+######################################
+BIN_PATH = $(ROOT_PATH)/bin
+OUTPUT_PATH	= $(TOP)/out
+SCRIPT_PATH = $(ROOT_PATH)/scripts
+SYS_SCRIPT_PATH = $(TOP)/scripts
+
+######################################
+# source
+######################################
+SOURCES ?= 
+ASM_SOURCES ?= $(filter %.s,$(SOURCES))
+C_SOURCES ?= $(filter %.c,$(SOURCES))
+CPP_SOURCES ?= $(filter %.cpp,$(SOURCES))
+
+vpath
+vpath %.s $(sort $(dir $(ASM_SOURCES)))
+vpath %.c $(sort $(dir $(C_SOURCES)))
+vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
+
+######################################
+# obj
+######################################
+OBJ_DIR := obj
+OBJECT_FILE = $(notdir $(C_SOURCES:.c=.o)) $(notdir $(ASM_SOURCES:.s=.o)) $(notdir $(CPP_SOURCES:.cpp=.o))
+OBJECT_FILE := $(addprefix $(OBJ_DIR)/,$(OBJECT_FILE))
+
+######################################
+# libs
+######################################
+LIBS_PATH = $(ROOT_PATH)/lib
+EXT_LIBS_PATH = $(TOP)/lib
+include $(TOP)/Makefile.library
+
+######################################
+# defined
+######################################
+include $(TOP)/Makefile.defs
+
+######################################
+# include path
+######################################
+sinclude $(ROOT_PATH)/Makefile.built.in
+
+######################################
+# flags
+######################################
+# mcu
+ifeq ($(CONFIG_STM32F103ZET6),y)
+CPU := -mcpu=cortex-m3
+FIREWARE_TARGET := stm32f103zet6
+endif
+
+CPU ?=
+FPU ?=
+FLOAT_ABI ?=
+
+MCU = $(CPU) -mthumb $(FPU) $(FLOAT_ABI)
+OPT = -Og -g -gdwarf-2
+
+FLAGS = $(MCU) $(DEFINES) -I$(TOP)/include $(INCLUDEPATH) $(OPT) -Werror -fdata-sections -ffunction-sections
+# Generate dependency information
+FLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
+
+# compile gcc flags
+ASFLAGS = $(FLAGS) 
+
+CFLAGS = $(FLAGS)
+
+CXXFLAGS = $(FLAGS) -fno-rtti -fno-exceptions
+
+# link script
+LDSCRIPT = $(BIN_PATH)/$(TARGET).ld
+LDFLAGS = $(MCU) -T$(LDSCRIPT) $(LIB_LIST) -Wl,-Map=$(BIN_PATH)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS += -lc -lm -lnosys --specs=nano.specs --specs=nosys.specs -u_printf_float
+
+.PHONY: all clean cp_bin_output build_fs_image update_rom_info pack
+
+all: $(OBJECT_FILE) Makefile | $(OBJ_DIR)
+ifdef TEMPLATE
+ifeq ($(TEMPLATE),fireware)
+	@$(MAKE) $(BIN_PATH)/$(TARGET).ld
+	@$(MAKE) $(BIN_PATH)/$(TARGET).elf
+	@$(MAKE) $(BIN_PATH)/$(TARGET).hex
+	@$(MAKE) $(BIN_PATH)/$(TARGET).bin
+	@$(MAKE) $(BIN_PATH)/$(TARGET).srec
+	@$(MAKE) $(BIN_PATH)/$(TARGET).list
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).elf FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).hex FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).bin FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+else ifeq ($(TEMPLATE),image)
+	@$(MAKE) $(BIN_PATH)/$(TARGET).ld
+	@$(MAKE) $(BIN_PATH)/$(TARGET).elf
+	@$(MAKE) $(BIN_PATH)/$(TARGET).hex
+	@$(MAKE) $(BIN_PATH)/$(TARGET).bin
+	@$(MAKE) $(BIN_PATH)/$(TARGET).srec
+	@$(MAKE) $(BIN_PATH)/$(TARGET).list
+	@$(MAKE) $(BIN_PATH)/$(TARGET).img
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).elf FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).hex FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).bin FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).img FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+else ifeq ($(TEMPLATE),app)
+	@$(MAKE) $(BIN_PATH)/$(TARGET).ld
+	@$(MAKE) $(BIN_PATH)/$(TARGET).elf
+	@$(MAKE) $(BIN_PATH)/$(TARGET).hex
+	@$(MAKE) $(BIN_PATH)/$(TARGET).bin
+	@$(MAKE) $(BIN_PATH)/$(TARGET).srec
+	@$(MAKE) $(BIN_PATH)/$(TARGET).list
+	@$(MAKE) $(BIN_PATH)/$(TARGET).img
+	@$(MAKE) build_fs_image
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).elf FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).hex FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).bin FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) cp_bin_output FILE_NAME=$(BIN_PATH)/$(TARGET).img FILE_PATH=$(OUTPUT_PATH)/$(TARGET)
+	@$(MAKE) update_rom_info
+	@$(MAKE) pack
+else ifeq ($(TEMPLATE),static_lib)
+	@$(MAKE) $(LIBS_PATH)/$(TARGET).a
+else ifeq ($(TEMPLATE),share_lib)
+	@$(MAKE) $(LIBS_PATH)/$(TARGET).so
+else ifeq ($(TEMPLATE),preinit)
+	@$(call PRINT_CP_TARGET,"$(words $(SHADER_SOURCE_PATH))")
+	@$(MKDIR) -p $(SHADER_DESTINATION)
+	@$(CP) -arf $(SHADER_SOURCE_PATH) $(SHADER_DESTINATION)
+else ifeq ($(TEMPLATE),ext_static_lib)
+	@$(MAKE) $(EXT_LIBS_PATH)/$(TARGET).a
+	@$(call PRINT_CP_TARGET,"$(words $(SHADER_SOURCE_PATH))")
+	@$(CP) -arf $(SHADER_SOURCE_PATH) $(SHADER_DESTINATION)
+else 
+	@$(error "no defined TEMPLATE")
+endif
+else
+	@$(error "no defined TEMPLATE")
+endif
+
+clean:
+	@$(RM) -rf $(OBJ_DIR)
+ifdef TEMPLATE
+ifeq ($(TEMPLATE),fireware)
+	@$(RM) -rf $(BIN_PATH)
+	@$(RM) -rf $(LIBS_PATH)
+else ifeq ($(TEMPLATE),image)
+	@$(RM) -rf $(BIN_PATH)
+	@$(RM) -rf $(LIBS_PATH)
+else ifeq ($(TEMPLATE),app)
+	@$(RM) -rf $(BIN_PATH)
+	@$(RM) -rf $(LIBS_PATH)
+endif
+endif
+
+$(OBJ_DIR) $(BIN_PATH) $(LIBS_PATH) $(EXT_LIBS_PATH) $(OUTPUT_PATH) $(OUTPUT_PATH)/$(TARGET):
+	@$(MKDIR) -p $@
+
+$(OBJ_DIR)/%.o: %.cpp Makefile | $(OBJ_DIR)
+	@$(call PRINT_COMPILE_CPP,"$<")
+	@$(XCXX) -E $(CXXFLAGS) $< -o $(@:.o=.i)
+	@$(XCXX) -c $(CXXFLAGS) -Wa,-a,-ad,-alms=$(OBJ_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
+
+$(OBJ_DIR)/%.o: %.c Makefile | $(OBJ_DIR)
+	@$(call PRINT_COMPILE_C,"$<")
+	@$(XCC) -E $(CFLAGS) $< -o $(@:.o=.i)
+	@$(XCC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(OBJ_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+
+$(OBJ_DIR)/%.o: %.s Makefile | $(OBJ_DIR)
+	@$(call PRINT_COMPILE_ASM,"$<")
+	@$(XAS) -E $(ASFLAGS) $< -o $(@:.o=.i)
+	@$(XAS) -c $(ASFLAGS) -Wa,-a,-ad,-alms=$(OBJ_DIR)/$(notdir $(<:.s=.lst)) $< -o $@
+
+$(BIN_PATH)/$(TARGET).img: $(BIN_PATH)/$(TARGET).elf | $(BIN_PATH)
+	@$(call PRINT_GENERATE_IMAGE,"$(notdir $@"))
+	@$(PYTHON) $(SYS_SCRIPT_PATH)/mkimage.py $^ $(<:.elf=.bin) $@
+
+$(BIN_PATH)/$(TARGET).ld: $(SCRIPT_PATH)/product.ldi Makefile | $(BIN_PATH)
+	@$(call PRINT_GENERATE_LINKSCRIPT,"$(notdir $@"))
+	@$(XCC) $(DEFINES) -I$(TOP)/include -x c -P -E $< -o $@
+
+$(BIN_PATH)/$(TARGET).elf: $(OBJECT_FILE) $(LIB_LIST) Makefile | $(BIN_PATH)
+	@$(call PRINT_COMPILE_ELF,"$(notdir $@"))
+	@$(XCXX) $(OBJECT_FILE) $(LDFLAGS) -o $@
+
+$(BIN_PATH)/$(TARGET).hex: $(BIN_PATH)/$(TARGET).elf Makefile | $(BIN_PATH)
+	@$(call PRINT_COMPILE_HEX,"$(notdir $@"))
+	@$(XOBJCOPY) -Oihex $< $@
+        
+$(BIN_PATH)/$(TARGET).bin: $(BIN_PATH)/$(TARGET).elf Makefile | $(BIN_PATH)
+	@$(call PRINT_COMPILE_BIN,"$(notdir $@"))
+	@$(XOBJCOPY) -Obinary -S $< $@
+
+$(BIN_PATH)/$(TARGET).srec: $(BIN_PATH)/$(TARGET).elf Makefile | $(BIN_PATH)
+	@$(call PRINT_COMPILE_SREC,"$(notdir $@"))
+	@$(XOBJCOPY) -Osrec $< $@
+
+$(BIN_PATH)/$(TARGET).list: $(BIN_PATH)/$(TARGET).elf Makefile | $(BIN_PATH)
+	@$(call PRINT_COMPILE_LIST,"$(notdir $@"))
+	@$(XOBJDUMP) -S $< > $@
+
+$(LIBS_PATH)/$(TARGET).a: $(OBJECT_FILE) | $(LIBS_PATH) 
+	@$(call PRINT_COMPILE_STATIC_LIB,"$@")
+	@$(XAR) -cr -o $@ $^
+
+$(LIBS_PATH)/$(TARGET).so: $(OBJECT_FILE) | $(LIBS_PATH) 
+	@$(call PRINT_COMPILE_SHARE_LIB,"$@")
+
+$(EXT_LIBS_PATH)/$(TARGET).a: $(OBJECT_FILE) | $(EXT_LIBS_PATH) 
+	@$(call PRINT_COMPILE_STATIC_LIB,"$@")
+	@$(XAR) -cr -o $@ $^
+
+cp_bin_output:
+	@$(call PRINT_CP_FILE,"$(FILE_NAME)","$(FILE_PATH)")
+	@$(MKDIR) -p $(FILE_PATH)
+	@$(CP) -arf $(FILE_NAME) $(FILE_PATH)
+
+build_fs_image:
+	@$(call PRINT_GENERATE_FS_IMAGE,"$@")
+
+update_rom_info: $(BIN_PATH)
+	@$(XCC) $(DEFINES) -I$(TOP)/include -x c -P -E $(SCRIPT_PATH)/rom_images_conifg.pyi -o $(BIN_PATH)/rom_images_conifg.py
+
+pack:
+	@$(PYTHON) $(SYS_SCRIPT_PATH)/pack.py	-iboot $(OUTPUT_PATH)/iboot/iboot.bin \
+											-xboot $(OUTPUT_PATH)/xboot/xboot.img \
+											-uboot $(OUTPUT_PATH)/uboot/uboot.img \
+											-appmain $(OUTPUT_PATH)/appmain/appmain.img \
+											-output $(OUTPUT_PATH)/$(FIREWARE_TARGET).bin

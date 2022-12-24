@@ -1,0 +1,96 @@
+
+ifeq ($(CONFIG_SUPPORT_STM32_ASSERT),y)
+DEFINES += -DUSE_FULL_ASSERT
+endif
+
+ifeq ($(CONFIG_SDK_RELEASE),y)
+DEFINES += -DSDK_RELEASE
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_GPIO_DEBUG),y)
+DEFINES += -D_GPIO_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_ADC_DEBUG),y)
+DEFINES += -D_ADC_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_CRC_DEBUG),y)
+DEFINES += -D_CRC_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_DMA_DEBUG),y)
+DEFINES += -D_DMA_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_FLASH_DEBUG),y)
+DEFINES += -D_FLASH_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_INIT_DEBUG),y)
+DEFINES += -D_INIT_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_MAIN_DEBUG),y)
+DEFINES += -D_MAIN_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_NVIC_DEBUG),y)
+DEFINES += -D_NVIC_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_RCC_DEBUG),y)
+DEFINES += -D_RCC_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_RTC_DEBUG),y)
+DEFINES += -D_RTC_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_SYSTICK_DEBUG),y)
+DEFINES += -D_SYSTICK_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_VECTOR_DEBUG),y)
+DEFINES += -D_VECTOR_DEBUG
+endif
+
+ifeq ($(CONFIG_SUPPORT_STM32_IAP_DEBUG),y)
+DEFINES += -D_IAP_DEBUG
+endif
+
+ifeq ($(CONFIG_STM32F103ZET6),y)
+DEFINES += -DSTM32F103ZET6
+DEFINES += -D__PLATFORM_NAME__=\"STM32F103ZET6\"
+DEFINES += -D__PLATFORM_FLASH_SIZE__=512
+DEFINES += -D__PLATFORM_FLASH_ADDR__=0x08000000
+DEFINES += -D__PLATFORM_FLASH_BLOCK_SIZE__=2048
+DEFINES += -D__PLATFORM_FLASH_BLOCK_COUNT__=256
+DEFINES += -D__PLATFORM_RAM_SIZE__=64
+DEFINES += -D__PLATFORM_RAM_ADDR__=0x20000000
+endif
+
+ifeq ($(CONFIG_IBOOT_MAX_SIZE),)
+$(error Wrong memory layout config detected. Neeeeed redo [make list]?)
+else
+	DEFINES += -DCONFIG_IBOOT_MAX_SIZE=$(CONFIG_IBOOT_MAX_SIZE)                                                           
+endif
+
+ifeq ($(CONFIG_XBOOT_MAX_SIZE),)
+$(error Wrong memory layout config detected. Neeeeed redo [make list]?)
+else
+	DEFINES += -DCONFIG_XBOOT_MAX_SIZE=$(CONFIG_XBOOT_MAX_SIZE)                                                           
+endif
+
+ifeq ($(CONFIG_UBOOT_MAX_SIZE),)
+$(error Wrong memory layout config detected. Neeeeed redo [make list]?)
+else
+	DEFINES += -DCONFIG_UBOOT_MAX_SIZE=$(CONFIG_UBOOT_MAX_SIZE)                                                           
+endif
+
+ifeq ($(CONFIG_APP_MAX_SIZE),)
+$(error Wrong memory layout config detected. Neeeeed redo [make list]?)
+else
+	DEFINES += -DCONFIG_APP_MAX_SIZE=$(CONFIG_APP_MAX_SIZE)                                                           
+endif
+

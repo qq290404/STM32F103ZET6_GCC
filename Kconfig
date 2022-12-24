@@ -1,0 +1,62 @@
+mainmenu "STM32 Configuration"
+
+menu "Platform Select"
+    choice
+        prompt "MCU Type"
+        default STM32F103ZET6
+
+        config STM32F103ZET6
+            bool "STM32F103ZET6"
+            help
+                STM32 shenzhou iii board
+	endchoice
+
+	source "platform/Kconfig"
+
+endmenu
+
+menu "Fireware space allocation"
+	config IBOOT_MAX_SIZE
+		hex "IBOOT Max Size"
+		default 0x8800
+		help
+			iboot bin max size
+
+	config XBOOT_MAX_SIZE
+		hex "XBOOT Max Size"
+		default 0x7800
+		help
+			xboot image max size
+
+	config UBOOT_MAX_SIZE
+		hex "UBOOT Max Size"
+		default 0x7800
+		help
+			uboot image max size
+
+	config APP_MAX_SIZE
+		hex "APP Max Size"
+		default 0x32000
+		help
+			app image max size
+endmenu
+
+config SDK_RELEASE
+    bool "SDK_RELEASE"
+    default n
+    help
+        SDK RELEASE
+
+menu "Path Settings"
+	config OPENOCD_PATH
+		string "OpenOCD Path"
+		default "F:/code/stm32/STM32F103ZET6/tools/OpenOCD"
+		help
+			openocd path setting
+
+	config COMPILER_PATH
+		string "Compiler Path"
+		default "F:/code/stm32/STM32F103ZET6/tools/toolchain/gcc-arm-none-eabi"
+		help
+			compiler path setting
+endmenu
