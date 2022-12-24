@@ -5,3 +5,7 @@ out
 .config
 .config.old
 *.pyc
+
+!/preinit/bin
+!/tools/linux/bin
+!/lib
