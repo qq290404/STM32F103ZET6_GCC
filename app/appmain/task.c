@@ -15,6 +15,8 @@
 #define task_debug_d(fmt, ...)
 #endif
 
+void main_service_entry(void);
+
 
 #define START_TASK_STK_SIZE   1024
 
@@ -50,6 +52,7 @@ static void Task_LED(void* arg)
 
 static void Task_AppMain(void* arg)
 {
+	main_service_entry();
 	while(1) {
 		task_debug_d("appmain!");
 		OSTimeDlyHMSM(0, 0, 2, 0);

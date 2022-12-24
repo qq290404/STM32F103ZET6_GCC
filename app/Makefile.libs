@@ -1,5 +1,6 @@
 STATIC_LINK_EXT_LIB_LIST += libstm32.a
 STATIC_LINK_LIB_LIST += libucosii.a
+STATIC_LINK_LIB_LIST += libservice.a
 STATIC_LINK_LIB_LIST += libili9320.a
 STATIC_LINK_LIB_LIST += libw25x16.a
 
