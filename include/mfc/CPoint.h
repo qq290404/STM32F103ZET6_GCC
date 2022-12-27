@@ -1,5 +1,5 @@
-#ifndef __CPOINT_H__
-#define __CPOINT_H__
+#ifndef __CPLUSPLUS_POINT_H__
+#define __CPLUSPLUS_POINT_H__
 
 #define PCPOINT_NULL					((CPoint *) 0)
 

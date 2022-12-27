@@ -1,5 +1,5 @@
-#ifndef __CRECT_H__
-#define __CRECT_H__
+#ifndef __CPLUSPLUS_RECT_H__
+#define __CPLUSPLUS_RECT_H__
 
 #define PCRECT_NULL								((CRect *) 0)
 

@@ -1,5 +1,5 @@
-#ifndef __CLINE_H__
-#define __CLINE_H__
+#ifndef __CPLUSPLUS_LINE_H__
+#define __CPLUSPLUS_LINE_H__
 
 #define PCLINE_NULL					((CLine *) 0)
 

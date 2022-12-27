@@ -1,5 +1,5 @@
-#ifndef __CSIZE_H__
-#define __CSIZE_H__
+#ifndef __CPLUSPLUS_SIZE_H__
+#define __CPLUSPLUS_SIZE_H__
 
 #define PCSIZE_NULL					((CSize *) 0)
 

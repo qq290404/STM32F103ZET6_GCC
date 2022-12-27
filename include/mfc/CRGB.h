@@ -1,5 +1,5 @@
-#ifndef __CRGB_H__
-#define __CRGB_H__
+#ifndef __CPLUSPLUS_RGB_H__
+#define __CPLUSPLUS_RGB_H__
 
 class CRGB
 {

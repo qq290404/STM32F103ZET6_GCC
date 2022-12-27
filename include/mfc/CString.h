@@ -1,5 +1,5 @@
-#ifndef __CSTRING_H__
-#define __CSTRING_H__
+#ifndef __CPLUSPLUS_STRING_H__
+#define __CPLUSPLUS_STRING_H__
 
 #define PCSTRING_NULL					((CString *) 0)
 
