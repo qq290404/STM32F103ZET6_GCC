@@ -21,6 +21,11 @@ public:
     inline void set_rect_right(int right)			{	this->right = right;	}
     inline void set_rect_bottom(int bottom)         {	this->bottom = bottom;	}
 
+public:
+	void SetRect(int left = 0, int top = 0, int right = 0, int bottom = 0);
+	void CopyRect(const CRect& rc);
+	bool IsRectEmpty(void);
+
 private:
     int left;
     int top;
