@@ -9,3 +9,5 @@ out
 !/preinit/bin
 !/tools/linux/bin
 !/lib
+!/tools
+
