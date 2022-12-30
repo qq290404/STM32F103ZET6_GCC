@@ -203,6 +203,7 @@ struct rcc_clock_scale_t
 void RCC_Clock_Setup_Init(const struct rcc_clock_scale_t *);
 void RCC_Update_Clock_Tree(const struct rcc_clock_scale_t*);
 uint32_t RCC_Get_Clock_Freq(enum rcc_clock_tree_e);
+const struct rcc_clock_scale_t* RCC_Get_Clock_Scale(void);
 void RCC_Print_Clock_Freq(enum rcc_clock_tree_e, const char *);
 
 #ifdef __cplusplus
