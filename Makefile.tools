@@ -8,7 +8,7 @@ endif
 
 OPENOCD_TARGET_CFG ?= 
 
-OPENOCD_CMD := $(OPENOCD) -f $(OPENOCD_PATH)/share/openocd/scripts/interface/stlink.cfg -f $(OPENOCD_PATH)/share/openocd/scripts/target/$(OPENOCD_TARGET_CFG) 
+OPENOCD_CMD := $(OPENOCD) -f interface/stlink.cfg -f target/$(OPENOCD_TARGET_CFG) 
 
 .PHONY: erase
 .PHONY: download

@@ -1,7 +1,5 @@
-OPENOCD_PATH    := $(CONFIG_OPENOCD_PATH)
-COMPILER_PATH   := $(CONFIG_COMPILER_PATH)
 
-BINUTIL_PREFIX := $(COMPILER_PATH)/bin/arm-none-eabi-
+BINUTIL_PREFIX := arm-none-eabi-
 
 XAR         :=   $(BINUTIL_PREFIX)ar
 XAS         :=   $(BINUTIL_PREFIX)gcc -x assembler-with-cpp
@@ -32,5 +30,5 @@ RM    := rm
 SH    := sh
 CD    := cd
 
-OPENOCD := $(OPENOCD_PATH)/bin/openocd
+OPENOCD := openocd
 PYTHON := python

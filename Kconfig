@@ -44,16 +44,3 @@ config SDK_RELEASE
     help
         SDK RELEASE
 
-menu "Path Settings"
-	config OPENOCD_PATH
-		string "OpenOCD Path"
-		default "F:/code/stm32/STM32F103ZET6/tools/OpenOCD"
-		help
-			openocd path setting
-
-	config COMPILER_PATH
-		string "Compiler Path"
-		default "F:/code/stm32/STM32F103ZET6/tools/toolchain/gcc-arm-none-eabi"
-		help
-			compiler path setting
-endmenu
