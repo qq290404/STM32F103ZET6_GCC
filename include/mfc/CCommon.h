@@ -63,6 +63,22 @@ void InflateRectToPt(struct RECT* prc, int x, int y);
 bool PtInRect(const struct RECT* prc, int x, int y);
 void RectOut(struct RECT* prc);
 
+struct RGB
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char a;
+};
+
+struct BITMAP
+{
+	int width;
+	int height;
+	int bits;
+	const unsigned char* pBmpBits;
+	const unsigned int* pPalette;
+};
 
 #ifdef __cplusplus
 }
