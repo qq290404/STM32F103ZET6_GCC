@@ -1,16 +1,6 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define __SELF			//DEMO
-
-#if defined(__SELF)
-	#define USER_FIRM			Mingguang.Li
-	#define USER_PRODUCT		Demo
-#elif
-	#pragma message("no defined Consumer")
-#endif
-
-
 #if !defined(USER_FIRM)
 	#error("no defined USER_FIRM")
 #elif !defined(USER_PRODUCT)

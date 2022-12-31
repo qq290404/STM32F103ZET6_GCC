@@ -44,3 +44,4 @@ config SDK_RELEASE
     help
         SDK RELEASE
 
+source "app/Kconfig"

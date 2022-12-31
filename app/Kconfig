@@ -1,0 +1,20 @@
+menu "USER SELECT"
+	choice USER_FIRM
+		bool "USER FIRM"
+        default USER_FIRM_NAME_SELF
+
+		config USER_FIRM_NAME_SELF
+			bool "Mingguang.Li"
+
+	endchoice
+
+	choice USER_PRODUCT
+		bool "USER PRODUCT"
+        default USER_PRODUCT_DEMO
+
+		config USER_PRODUCT_DEMO
+			bool "Demo"
+
+	endchoice
+
+endmenu
