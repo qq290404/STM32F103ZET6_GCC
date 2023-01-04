@@ -13,6 +13,8 @@
 #define timer_log_d(fmt, ...)
 #endif
 
+static HBASETIMER hbasetimer = HBASETIMER_NULL;
+
 static struct Timer g_stTimer[MAX_TIMER_NUM];
 
 static struct Timer *pstNowTimer;
@@ -197,24 +199,33 @@ static int DeleteTimerByEvent(int (*pEvent)(void))
     return bRes;
 }
 
+static int base_timer_count = 0;
+static void basetimer_callback(void)
+{
+	if(base_timer_count++ == 100) {
+		base_timer_count = 0;
+	}
+}
 unsigned int GetTimerCount(void)
 {
-//	return TIM_GetCount(System_Timer_Type_3);
-	return 0;
+	return base_timer_count;
 }
 
 void TimerInit(void)
 {
     struct Timer *pstTimerItem;
-    int i;
 
-//	TIM_Init(System_Timer_Type_3, 5000, 8000, timer_callback);
-    
+	struct base_timer_init_t init;
+	BaseTimer_StructInit(&init, base_timer_index_1);
+	init.Prescaler = 3600;
+	init.Autoreload = 2;
+	hbasetimer = BaseTimer_Init(&init);
+	BaseTimer_Register_CallBack(hbasetimer, basetimer_callback); 
 	pstTimerItem = g_stTimer;
     pstTimer_Start = g_stTimer;
     pstNowTimer = g_stTimer;
     pstTimer_End = &g_stTimer[MAX_TIMER_NUM - 1];
-    for(i = 0; i < MAX_TIMER_NUM; i++) {
+    for(int i = 0; i < MAX_TIMER_NUM; i++) {
         pstTimerItem->type = MAX_TYPE;
         pstTimerItem->mode          = MAX_TIMER_MODE; //need default invalid mode
         pstTimerItem->Interval      = INVALID_INTERVAL;

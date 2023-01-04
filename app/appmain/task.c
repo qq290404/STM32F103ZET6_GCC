@@ -3,6 +3,8 @@
 #include "clog.h"
 
 #include "ucos_ii.h"
+#include "common.h"
+
 
 #define _TASK_DEBUG
 #ifdef _TASK_DEBUG
@@ -50,12 +52,27 @@ static void Task_LED(void* arg)
 	}
 }
 
+static int polling_test1(void)
+{
+	task_debug_d("static int polling_test1(void)");
+}
+
+static int polling_test2(void)
+{
+	task_debug_d("static int polling_test2(void)");
+}
 static void Task_AppMain(void* arg)
 {
+	TimerInit();
+
+	TimerInsert(MULTI_TIME, SYSTEM_TYPE, 1, 0, polling_test1, INTERVAL_10MS);
+	TimerInsert(MULTI_TIME, SYSTEM_TYPE, 1, 0, polling_test2, INTERVAL_100MS);
+
 	main_service_entry();
 	while(1) {
-		task_debug_d("appmain!");
-		OSTimeDlyHMSM(0, 0, 2, 0);
+//		task_debug_d("appmain!");
+		polling();
+		OSTimeDlyHMSM(0, 0, 0, 1);
 	}
 }
 
