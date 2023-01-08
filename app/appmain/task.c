@@ -35,7 +35,7 @@ static void TaskStackInfoInit(struct task_stack_info_t* info, const char* name, 
 static void Task_Usage(void* arg)
 {
 	while(1) {
-		task_debug_d("CPU Usage %d%%", OSCPUUsage);
+		//task_debug_d("CPU Usage %d%%", OSCPUUsage);
 		OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }
@@ -65,7 +65,7 @@ static void Task_AppMain(void* arg)
 {
 	TimerInit();
 
-	TimerInsert(MULTI_TIME, SYSTEM_TYPE, 1, 0, polling_test1, INTERVAL_10MS);
+	TimerInsert(MULTI_TIME, SYSTEM_TYPE, 5, 0, polling_test1, INTERVAL_10MS);
 	TimerInsert(MULTI_TIME, SYSTEM_TYPE, 1, 0, polling_test2, INTERVAL_100MS);
 
 	main_service_entry();
